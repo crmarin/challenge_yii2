@@ -25,6 +25,8 @@ use Yii;
  * @property int|null $application_type
  * @property string|null $business_title
  * @property int|null $lang
+ * @property DescriptionOfGoods[] $descriptionOfGoods
+ * @property User $user
  */
 class Oadode extends \yii\db\ActiveRecord
 {
@@ -74,5 +76,25 @@ class Oadode extends \yii\db\ActiveRecord
             'business_title' => Yii::t('app', 'Business Title'),
             'lang' => Yii::t('app', 'Lang'),
         ];
+    }
+
+    /** 
+     * Gets query for [[DescriptionOfGoods]]. 
+     * 
+     * @return \yii\db\ActiveQuery 
+     */
+    public function getDescriptionOfGoods()
+    {
+        return $this->hasMany(DescriptionOfGoods::class, ['oadode_id' => 'id']);
+    }
+
+    /** 
+     * Gets query for [[User]]. 
+     * 
+     * @return \yii\db\ActiveQuery 
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }

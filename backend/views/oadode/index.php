@@ -2,21 +2,35 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OadodeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'Oadodes');
+
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="oadode-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="wrapper-cols3">
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Oadode'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        <div>
+            <h1><?= Html::encode($this->title) ?></h1>
+
+            <p>
+                <?= Html::a(Yii::t('app', 'Create Oadode'), ['create'], ['class' => 'btn btn-success']) ?>
+            </p>
+        </div>
+
+        <div>
+            <h1><?= Html::encode(Yii::t('app', 'Description Of Goods')) ?></h1>
+            <p>
+                <?= Html::a(Yii::t('app', 'Views Description Of Goods'), ['descriptions/index'], ['class' => 'btn btn-success']) ?>
+            </p>
+        </div>
+    </div>
 
     <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); 
@@ -58,7 +72,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]
             ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view}{update}{view2}',
+                'buttons' => [
+                    'view' => function ($url, $model) {
+                        $url = Url::toRoute(['view', 'id' => $model->id]);
+                        return Html::a('<button type="button" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-eye-open"></i></button>', $url, ['data-pjax' => '0']);
+                    },
+                    'update' => function ($url, $model) {
+                        $url = Url::toRoute(['edit', 'id' => $model->id]);
+                        return Html::a('<button type="button" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-pencil"></i></button>', $url, ['data-pjax' => '0']);
+                    },
+                ]
+            ],
         ],
     ]); ?>
 

@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -16,15 +17,15 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a(Yii::t('app', 'Update'), ['edit', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
     </p>
+
+
+    <?php
+    $url = Url::toRoute(['oadode/view-pdf', 'id' => $model->id]);
+    echo Html::a('<button type="button" rel="tooltip" class="btn btn-warning" data-original-title=" Descargar PDF">
+    <i class="glyphicon glyphicon-download-alt"></i> Download PDF</button>', [$url], ['data-pjax' => '0']);
+    ?>
 
     <?= DetailView::widget([
         'model' => $model,
