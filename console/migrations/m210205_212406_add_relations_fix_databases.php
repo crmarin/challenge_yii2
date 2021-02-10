@@ -27,12 +27,6 @@ class m210205_212406_add_relations_fix_databases extends Migration
         $sql = "ALTER TABLE description_of_goods ADD CONSTRAINT fk_dog_1 FOREIGN KEY (oadode_id) REFERENCES oadode(id) ON DELETE NO ACTION ON UPDATE NO ACTION;";
         Yii::$app->db->createCommand($sql)->execute();
 
-        $sql = "ALTER TABLE description_of_goods ADD CONSTRAINT fk_dog_2 FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE NO ACTION ON UPDATE NO ACTION;";
-        Yii::$app->db->createCommand($sql)->execute();
-
-        $sql = "ALTER TABLE oadode ADD CONSTRAINT fk_ad_2 FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE NO ACTION ON UPDATE NO ACTION;";
-        Yii::$app->db->createCommand($sql)->execute();
-
         $sql = "SET FOREIGN_KEY_CHECKS=1;";
         Yii::$app->db->createCommand($sql)->execute();
     }

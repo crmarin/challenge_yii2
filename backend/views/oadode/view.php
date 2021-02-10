@@ -41,23 +41,36 @@ $this->params['breadcrumbs'][] = $this->title;
             'business_phone',
             'business_fax',
             'business_email:email',
-            'application_type',
-            'business_title',
+            [
+                'attribute' => 'business_title',
+                'value' => function ($model) {
+
+                    $list = [1 => 'Owner', 2 => 'Authorized Indivudual', 3 => 'Designated Official', 4 => 'Officer', 5 => 'Director', 6 => 'Employee'];
+
+                    $checkedList = array_values(explode(',', $model->business_title));
+
+                    $aux = array_intersect_key($list, array_flip($checkedList));
+
+                    return implode(', ', $aux);
+                },
+            ],
+            [
+                'attribute' => 'application_type',
+                'value' => function ($model) {
+                    if ($model->application_type == 1)
+                        return 'New';
+                    else
+                        return 'Re-assessment';
+                },
+            ],
             [
                 'attribute' => 'lang',
                 'value' => function ($model) {
                     if ($model->lang == 1)
                         return 'En';
-                    else if ($model->lang == 2)
-                        return 'Es';
                     else
                         return 'Fr';
                 },
-                'filter' => [
-                    1 => 'En',
-                    2 => 'Es',
-                    3 => 'Fr',
-                ]
             ],
         ],
     ]) ?>

@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); 
+    <?php // echo $this->render('_search', ['model' => $searchModel]);
     ?>
 
     <?= GridView::widget([
@@ -43,9 +43,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'application_id',
-            'customer_id',
-            'user_id',
+            // 'application_id',
+            // 'customer_id',
+            // 'user_id',
             'legal_name',
             'business_name',
             'business_address',
@@ -53,22 +53,30 @@ $this->params['breadcrumbs'][] = $this->title;
             //'business_phone',
             //'business_fax',
             //'business_email:email',
-            //'application_type',
-            'business_title',
+            [
+                'attribute' => 'application_type',
+                'value' => function ($model) {
+                    if ($model->application_type == 1)
+                        return 'New';
+                    else
+                        return 'Re-assessment';
+                },
+                'filter' => [
+                    1 => 'New',
+                    2 => 'Re-assessment',
+                ]
+            ],
             [
                 'attribute' => 'lang',
                 'value' => function ($model) {
                     if ($model->lang == 1)
                         return 'En';
-                    else if ($model->lang == 2)
-                        return 'Es';
                     else
                         return 'Fr';
                 },
                 'filter' => [
                     1 => 'En',
-                    2 => 'Es',
-                    3 => 'Fr',
+                    2 => 'Fr',
                 ]
             ],
 

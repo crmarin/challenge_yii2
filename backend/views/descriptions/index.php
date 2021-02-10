@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); 
+    <?php // echo $this->render('_search', ['model' => $searchModel]);
     ?>
 
     <?= GridView::widget([
@@ -46,16 +46,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'oadode_id',
                 'label' => 'oadode',
                 'value' => function ($model) {
-                    return $model->oadode->legal_name;
+                    return $model->oadode->id;
                 },
-                'filter' => ArrayHelper::map(Oadode::find()->all(), 'id', 'legal_name'),
+                'filter' => ArrayHelper::map(Oadode::find()->all(), 'id', 'id'),
             ],
-            'user_id',
+
             'description',
             'ecl_group',
-            //'ecl_item',
+            'ecl_item',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            // ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 

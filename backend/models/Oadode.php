@@ -6,6 +6,7 @@
 
 namespace backend\models;
 
+use backend\components\BussinessValidator;
 use Yii;
 
 /**
@@ -47,9 +48,9 @@ class Oadode extends \yii\db\ActiveRecord
             [['application_id', 'customer_id', 'user_id', 'application_type', 'lang'], 'integer'],
             [['legal_name', 'business_name', 'business_address', 'business_phone', 'business_fax', 'business_email'], 'string', 'max' => 255],
 
-            ['business_name', 'match', 'pattern' => '/^[a-zA-Z]*$/i', 'message' => 'Only letters'],
-            ['business_phone', 'match', 'pattern' => '/^[0-9]*$/i', 'message' => 'Only numerics'],
-            [['application_id', 'customer_id', 'user_id', 'application_type', 'lang', 'business_mailing_address', 'legal_name', 'business_name', 'business_address', 'business_phone', 'business_email'], 'required'],
+            [['business_title'], BussinessValidator::class],
+
+            [['application_id', 'customer_id', 'user_id', 'application_type', 'lang', 'business_mailing_address', 'legal_name', 'business_name', 'business_address', 'business_phone', 'business_email', 'business_title'], 'required'],
 
             [['business_mailing_address', 'business_email'], 'email'],
         ];
@@ -66,15 +67,15 @@ class Oadode extends \yii\db\ActiveRecord
             'customer_id' => Yii::t('app', 'Customer ID'),
             'user_id' => Yii::t('app', 'User ID'),
             'legal_name' => Yii::t('app', 'Legal Name'),
-            'business_name' => Yii::t('app', 'Business Name'),
-            'business_address' => Yii::t('app', 'Business Address'),
-            'business_mailing_address' => Yii::t('app', 'Business Mailing Address'),
-            'business_phone' => Yii::t('app', 'Business Phone'),
-            'business_fax' => Yii::t('app', 'Business Fax'),
-            'business_email' => Yii::t('app', 'Business Email'),
-            'application_type' => Yii::t('app', 'Application Type'),
-            'business_title' => Yii::t('app', 'Business Title'),
-            'lang' => Yii::t('app', 'Lang'),
+            'business_name' => Yii::t('app', 'Business Name (If different from legal name)'),
+            'business_address' => Yii::t('app', 'Civic Address'),
+            'business_mailing_address' => Yii::t('app', 'Mailing Address (If different from civic address)'),
+            'business_phone' => Yii::t('app', 'Telephone Number'),
+            'business_fax' => Yii::t('app', 'Facsmile Number'),
+            'business_email' => Yii::t('app', 'Email'),
+            'application_type' => Yii::t('app', 'Type of Application'),
+            'business_title' => Yii::t('app', 'Business Title (Select all that apply)'),
+            'lang' => Yii::t('app', 'Preferred Language of Correspondence'),
         ];
     }
 

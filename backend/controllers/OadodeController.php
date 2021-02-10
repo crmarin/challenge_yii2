@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\DescriptionOfGoods;
 use Yii;
 use backend\models\Oadode;
 use backend\models\OadodeSearch;
@@ -127,6 +128,16 @@ class OadodeController extends Controller
         exit;
     }
 
+    public function actionValidation()
+    {
+        $model = new Oadode();
+
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+    }
+
     /**
      * Creates a new Oadode model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -135,26 +146,40 @@ class OadodeController extends Controller
     public function actionCreate()
     {
         $model = new Oadode();
+        $modelDescription = new DescriptionOfGoods();
 
         if ($model->load(Yii::$app->request->post())) {
-
 
             $transaction = Yii::$app->db->beginTransaction();
 
             try {
 
-                $model->business_title = implode(", ", Yii::$app->request->post()['Oadode']['business_title']);;
+                $model->business_title = implode(",", Yii::$app->request->post()['Oadode']['business_title']);;
 
                 // $model->user_id = \Yii::$app->user->id;
                 $model->user_id = 1;
+                $model->customer_id = 1;
+                $model->application_id = 1;
 
                 if (!$model->validate()) {
                     Yii::$app->response->format = Response::FORMAT_JSON;
                     return ActiveForm::validate($model);
                 }
 
+                $modelDescription = Yii::$app->request->post()['DescriptionOfGoods'];
+
                 if ($model->save()) {
 
+                    for ($i = 1; $i < 6; $i++) {
+
+                        $newmodelDescription = new DescriptionOfGoods();
+                        $newmodelDescription->description = $modelDescription['description'][$i];
+                        $newmodelDescription->ecl_group = $modelDescription['ecl_group'][$i];
+                        $newmodelDescription->ecl_item = $modelDescription['ecl_item'][$i];
+                        $newmodelDescription->oadode_id = $model->id;
+                        $newmodelDescription->user_id = 1;
+                        $newmodelDescription->save(false);
+                    }
                     $transaction->commit();
                     return $this->redirect(['index']);
                 } else {
@@ -170,6 +195,7 @@ class OadodeController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'modelDescription' => $modelDescription,
         ]);
     }
 
@@ -183,13 +209,56 @@ class OadodeController extends Controller
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
+        $modelDescription = $this->findModelDescription($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            $transaction = Yii::$app->db->beginTransaction();
+
+            try {
+
+                $model->business_title = implode(",", Yii::$app->request->post()['Oadode']['business_title']);;
+
+                // $model->user_id = \Yii::$app->user->id;
+                $model->user_id = 1;
+                $model->customer_id = 1;
+                $model->application_id = 1;
+
+                if (!$model->validate()) {
+                    Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($model);
+                }
+
+                $modelDescription = Yii::$app->request->post()['DescriptionOfGoods'];
+
+                if ($model->save()) {
+
+                    for ($i = 0; $i < 5; $i++) {
+
+                        $newmodelDescription = $this->findModelDescriptionOne($modelDescription['id_des'][$i]);
+                        $newmodelDescription->description = $modelDescription['description'][$i];
+                        $newmodelDescription->ecl_group = $modelDescription['ecl_group'][$i];
+                        $newmodelDescription->ecl_item = $modelDescription['ecl_item'][$i];
+                        $newmodelDescription->oadode_id = $model->id;
+                        $newmodelDescription->user_id = 1;
+                        $newmodelDescription->save(false);
+                    }
+                    $transaction->commit();
+                    return $this->redirect(['index']);
+                } else {
+                    $transaction->rollBack();
+                    throw new HttpException(401, 'Something wrong');
+                }
+            } catch (Exception $e) {
+
+                $transaction->rollBack();
+                throw $e;
+            }
         }
 
         return $this->render('edit', [
             'model' => $model,
+            'modelDescription' => $modelDescription,
         ]);
     }
 
@@ -203,6 +272,24 @@ class OadodeController extends Controller
     protected function findModel($id)
     {
         if (($model = Oadode::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    protected function findModelDescription($id)
+    {
+        if (($model = DescriptionOfGoods::find()->where(['oadode_id' => $id])->all()) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    protected function findModelDescriptionOne($id)
+    {
+        if (($model = DescriptionOfGoods::findOne($id)) !== null) {
             return $model;
         }
 

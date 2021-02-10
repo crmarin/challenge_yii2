@@ -36,6 +36,9 @@ class DescriptionOfGoods extends \yii\db\ActiveRecord
         return [
             [['oadode_id', 'user_id'], 'integer'],
             [['description', 'ecl_group', 'ecl_item'], 'string', 'max' => 255],
+
+            [['ecl_group', 'ecl_item'], 'match', 'pattern' => '/^[0-9,.]*$/i', 'message' => '0-9 . ,'],
+
             [['oadode_id'], 'exist', 'skipOnError' => true, 'targetClass' => Oadode::class, 'targetAttribute' => ['oadode_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
